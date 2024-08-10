@@ -6,6 +6,9 @@ node_modules
 *.a
 *.so
 
+#log
+*.log
+
 # Folders
 _obj
 _test
