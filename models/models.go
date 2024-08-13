@@ -38,13 +38,13 @@ const (
 
 type User struct {
 	ID        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
-	Username  string            `json:"username" bson:"username"`
-	Email     string            `json:"email"`
-	Password  string           `json:"-"`
+	Username  string             `json:"username" bson:"username"`
+	Email     string             `json:"email" validate:"required,email"`
+	Password  string             `json:"-"`
 	Image     *string            `json:"image"`
 	Name      *string            `json:"name"`
-	CreatedAt time.Time          `json:"created_at"`
-	UpdatedAt time.Time          `json:updated_at"`
-	Role     UserRole
-	Bookmark []*Book
+	CreatedAt time.Time          `json:"createdAt"`
+	UpdatedAt time.Time          `json:updatedAt"`
+	Role      UserRole
+	Bookmark  []*Book
 }

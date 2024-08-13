@@ -14,4 +14,9 @@ func BookRoutes(app *fiber.App) {
 
 func UserRoutes(app *fiber.App) {
 	app.Post("/api/register", controllers.RegisterUser)
+	app.Post("/api/login", controllers.Login)
+	app.Post("/api/user", controllers.User)
+	app.Post("/api/logout", controllers.Logout)
+
+
 }
