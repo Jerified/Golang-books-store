@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"regexp"
 	"time"
@@ -20,7 +21,7 @@ import (
 )
 
 var userConnection *mongo.Collection = database.GetCollection(database.DB, "users")
-var secretKey = []byte("SuckMyDickBitchlol")
+var secretKey = "SuckMyDickBitchlol"
 
 var emailRegex = regexp.MustCompile(`^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$`)
 
@@ -28,8 +29,10 @@ func RegisterUser(c *fiber.Ctx) error {
 	var data models.User
 
 	if err := c.BodyParser(&data); err != nil {
+		fmt.Println(err)
 		return err
 	}
+	fmt.Println(string(c.Body()))
 
 	if err := utils.ValidateStruct(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -57,7 +60,7 @@ func RegisterUser(c *fiber.Ctx) error {
 			"error": "User with this email already exists",
 		})
 	}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword(data.Password, bcrypt.DefaultCost)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to hash password",
@@ -67,7 +70,7 @@ func RegisterUser(c *fiber.Ctx) error {
 		// ID:       primitive.NewObjectID(),
 		Username: data.Username,
 		Email:    data.Email,
-		Password: string(hashedPassword),
+		Password: hashedPassword,
 		// Image:     new(string),
 		// Name:      new(string),
 		CreatedAt: time.Now(),
@@ -93,40 +96,34 @@ func Login(c *fiber.Ctx) error {
 		return err
 	}
 
+	fmt.Println(data)
+
 	if err := utils.ValidateStruct(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
+			"message": err.Error(),
 		})
 	}
 	if !emailRegex.MatchString(data.Email) {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid email format",
+			"message": "Invalid email format",
 		})
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	// defer cancel()
-
 	var user models.User
-	err := userConnection.FindOne(ctx, bson.M{"email": data.Email}).Decode(&user)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			log.Println("Email not found:", err)
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Email not found",
-			})
-		}
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Database error",
+	ctx, _ := context.WithTimeout(context.Background(), 100*time.Second)
+	// defer cancel()
+	userConnection.FindOne(ctx, bson.M{"email": data.Email}).Decode(&user)
+
+	if user.ID == primitive.NilObjectID {
+		fmt.Println("incorrect email")
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "Email not found",
 		})
 	}
-	// if emailCount > 0 {
-	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-	// 		"error": "User with this email already exists",
-	// 	})
-	// }
+
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data.Password)); err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Invalid Email or Password",
+		fmt.Println("incorrect password")
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid Email or Password",
 		})
 	}
 
@@ -138,7 +135,7 @@ func Login(c *fiber.Ctx) error {
 	token, err := claims.SignedString([]byte(secretKey))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to generate token",
+			"message": "Failed to generate token",
 		})
 	}
 
@@ -166,7 +163,7 @@ func User(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Unauthorized",
+			"message": "Unauthenticated",
 		})
 	}
 
@@ -194,17 +191,17 @@ func User(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
-func Logout (c *fiber.Ctx) error {
-	cookie := fiber.Cookie {
-		Name: "jwt",
-		Value: "",
-		Expires: time.Now().Add(-time.Hour),
-		HTTPOnly: true,  
+func Logout(c *fiber.Ctx) error {
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
 	}
 
 	c.Cookie(&cookie)
 
-	return c.JSON(fiber.Map {
+	return c.JSON(fiber.Map{
 		"message": "success",
 	})
 }
