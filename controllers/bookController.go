@@ -15,7 +15,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	// "go.mongodb.org/mongo-driver/mongo/options"
 )
 var bookConnection *mongo.Collection = database.GetCollection(database.DB, "books")
 func GetBooks(c *fiber.Ctx) error {
@@ -41,6 +40,27 @@ func GetBooks(c *fiber.Ctx) error {
 
 	return c.JSON(books)
 }
+func GetBookByID(c *fiber.Ctx) error {
+    id := c.Params("id")
+    objectID, err := primitive.ObjectIDFromHex(id)
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid book ID"})
+    }
+
+    var book models.Book
+    filter := bson.M{"_id": objectID}
+    
+    err = bookConnection.FindOne(context.Background(), filter).Decode(&book)
+    if err != nil {
+        if err == mongo.ErrNoDocuments {
+            return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Book not found"})
+        }
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to retrieve book"})
+    }
+
+    return c.JSON(book)
+}
+
 func CreateBook(c *fiber.Ctx) error {
 	book := new(models.Book)
 
@@ -71,7 +91,6 @@ func CreateBook(c *fiber.Ctx) error {
 	book.ID = result.InsertedID.(primitive.ObjectID)
 
 	return c.Status(201).JSON(
-		// "message "Book created successfully",
 		book)
 
 }

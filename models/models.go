@@ -46,5 +46,5 @@ type User struct {
 	CreatedAt time.Time          `json:"createdAt"`
 	UpdatedAt time.Time          `json:updatedAt"`
 	Role      UserRole
-	Bookmark  []*Book
+	Bookmark  []primitive.ObjectID `json:"bookmark"`
 }

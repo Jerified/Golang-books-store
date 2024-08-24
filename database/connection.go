@@ -6,10 +6,7 @@ import (
 	"log"
 	"os"
 
-	// "github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	// "go.mongodb.org/mongo-driver/bson"
-	// "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -29,14 +26,12 @@ func Connect() *mongo.Client {
 		log.Fatal(err)
 	}
 
-	// defer client.Disconnect(context.Background())
 
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// defer ca
 	fmt.Println("Connected to MONGODB ATLAS")
 	return client
 

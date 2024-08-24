@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"time"
 
-	// "net/http"
 
 	"github.com/Jerified/go-bookstore/database"
 	"github.com/Jerified/go-bookstore/models"
@@ -67,16 +66,12 @@ func RegisterUser(c *fiber.Ctx) error {
 		})
 	}
 	newUser := models.User{
-		// ID:       primitive.NewObjectID(),
 		Username: data.Username,
 		Email:    data.Email,
 		Password: hashedPassword,
-		// Image:     new(string),
-		// Name:      new(string),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Role:      models.UsersRole,
-		// Bookmark:  []*models.Book{},
 	}
 
 	result, err := userConnection.InsertOne(context.Background(), newUser)
@@ -109,8 +104,8 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 	var user models.User
-	ctx, _ := context.WithTimeout(context.Background(), 100*time.Second)
-	// defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
 	userConnection.FindOne(ctx, bson.M{"email": data.Email}).Decode(&user)
 
 	if user.ID == primitive.NilObjectID {
@@ -120,7 +115,8 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data.Password)); err != nil {
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data.Password))
+	if err != nil {
 		fmt.Println("incorrect password")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid Email or Password",
@@ -144,7 +140,7 @@ func Login(c *fiber.Ctx) error {
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24),
 		HTTPOnly: true,
-		Secure:   true,
+		// Secure:   true,
 	}
 	c.Cookie(&cookie)
 

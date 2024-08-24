@@ -54,8 +54,8 @@ const Login = () => {
   };
 
   return (
-    <div className='min-h-screen flex flex-col justify-center items-center w-full'>
-        <div className="border border-stone-400 rounded-xl p-8">
+    <div className='min-h-[cal(100vh-80px)] flex flex-col justify-center items-center w-full'>
+        <div className="border border-stone-400 rounded-xl p-8 w-[80%] md:w-[60%] lg:w-[40%]">
             <p className="text-2xl font-bold">Login</p>
             <p className="pt-2 pb-6 text">Welcome Back!</p>
             <button className="flex items-center gap-2 justify-center text-[15px] font-medium  border w-full py-2 mb-3 rounded-lg border-stone-400">
