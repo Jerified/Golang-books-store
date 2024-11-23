@@ -18,9 +18,9 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		// AllowMethods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+		AllowMethods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
 		// AllowHeaders: "Content-Type, Authorization, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-origin, Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Expose-Headers, Access-Control-Max-Age, Access-Control-Allow-Credentials",
-		AllowCredentials: true,
+		AllowCredentials: true, 
 
 		AllowOrigins: "http://localhost:3000",
 	}))
@@ -35,5 +35,5 @@ func main() {
 		port = "5000"
 	}
 
-	log.Fatal(app.Listen("0.0.0.0:" + port))
+	log.Fatal(app.Listen("0.0.0.0:" + port)) 
 }

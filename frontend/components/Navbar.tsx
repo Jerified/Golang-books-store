@@ -37,8 +37,11 @@ const Navbar = () => {
                     ))}
                 </div>
             </div>
-            <div className="lg:hidden">
-                <AnimatedHamburgerButton />
+            <div className="flex gap-4 items-center">
+                <Link href={"/login"} className="text-md md:text-lg font-semibold bg-slate-200 rounded-3xl px-8 py-2">Login</Link>
+                <div className="lg:hidden">
+                    <AnimatedHamburgerButton />
+                </div>
             </div>
         </header>
     )

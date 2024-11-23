@@ -7,8 +7,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { FcGoogle } from 'react-icons/fc';
 import { signinSchema } from '@/utils/validator';
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link';
+import { toast } from "sonner"
 
 // import { signupSchema } from './schema';
 
@@ -43,7 +44,7 @@ const Login = () => {
 
     const content = await res.json()
     // Handle form submission, e.g., API call
-    console.log(data);
+    // console.log(data);
     console.log(content);
 
     if (res.ok) {
@@ -51,11 +52,12 @@ const Login = () => {
     }
 
     setIsLoading(false);
+    toast.success("Login successful")
   };
 
   return (
-    <div className='min-h-[cal(100vh-80px)] flex flex-col justify-center items-center w-full'>
-        <div className="border border-stone-400 rounded-xl p-8 w-[80%] md:w-[60%] lg:w-[40%]">
+    <div className='min-h-[cal(100vh-80px)] pb-5 flex flex-col justify-center items-center w-full'>
+        <div className="border border-stone-400 rounded-xl p-8 w-[80%] md:w-[60%] lg:w-[60%]">
             <p className="text-2xl font-bold">Login</p>
             <p className="pt-2 pb-6 text">Welcome Back!</p>
             <button className="flex items-center gap-2 justify-center text-[15px] font-medium  border w-full py-2 mb-3 rounded-lg border-stone-400">

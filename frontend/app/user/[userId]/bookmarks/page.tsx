@@ -1,50 +1,74 @@
-"use client"
+// "use client";
 
-import React from 'react'
-import { getUserBookmarks } from "@/lib/bookmarkService";
-import { useSelector } from 'react-redux';
-import { RootState } from "@/lib/store";
-import { useState, useEffect } from 'react';
-import { notFound, redirect } from 'next/navigation';
+// import React, { useState, useEffect } from "react";
+// import { getUserBookmarks } from "@/lib/bookmarkService";
+// import { useSelector } from "react-redux";
+// import { RootState } from "@/lib/store";
+import { notFound } from "next/navigation";
+import BookCard from "@/components/BookCard";
+import { Book } from "@/types/Book";
+import { getUser } from "@/lib/getUser";
 
+type UserIdProp = {
+  params: {
+    userId: string;
+  };
+};
 
-type userIdProp = {
-    params: {
-        userId: string
-    }
-}
+const Bookmarks = async ({ params }: UserIdProp) => {
+//   const [bookmarks, setBookmarks] = useState([]);
+//   const data = useSelector((state: RootState) => state.user.data);
+//   const userId = data?.id;
 
-const Bookmarks = ({params}: userIdProp) => {
-    const [bookmarks, setBookmarks] = useState(null);
-    const data = useSelector((state: RootState) => state.user.data);
-    const userId = data?.id;
+//   useEffect(() => { 
+//     const validateUser = () => {
+//       if (!userId || params.userId !== userId) {
+//         notFound();
+//       }
+//     };
 
-    // const bookmarks = getUserBookmarks(userId)
-    if (params.userId !== userId) {
-        notFound()
-    }
+//     validateUser();
+//   }, [userId, params.userId]);
 
-    useEffect(() => {
-        const fetchBookmarks = async () => {
-            if (!userId) return;
+//   useEffect(() => {
+//     const fetchBookmarks = async () => {
+//       if (!userId) return;
 
-            try {
-                const userBookmarks = await getUserBookmarks(userId);
-                setBookmarks(userBookmarks)
-                console.log(userBookmarks)
-            } catch (error) {
-                console.error("Failed to fetch bookmarks:", error);
-            }
-        };
+//       try {
+//         const userBookmarks = await getUserBookmarks(userId);
+//         setBookmarks(userBookmarks);
+//         console.log(userBookmarks);
+//       } catch (error) {
+//         console.error("Failed to fetch bookmarks:", error);
+//       }
+//     };
 
-        fetchBookmarks();
-    }, [userId]);
-    console.log(userId)
+//     fetchBookmarks();
+//   }, [userId]);
+
+//   if (!bookmarks) {
+//     return <div>Loading...</div>;
+//   }
+    const user = await getUser()
+    console.log(user)
+    // const bookmarks = await getUserBookmarks()
+
   return (
-    <div> 
-        {params.userId}
+    <div>
+      <h1 className="text-2xl font-semibold pb-8">Bookmarks</h1>
+      {/* {bookmarks.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 ">
+          {bookmarks.map((bookmark: Book) => (
+            <React.Fragment key={bookmark.id}>
+                <BookCard book={bookmark} base64={''} />
+            </React.Fragment>
+          ))}
+        </div>
+      ) : (
+        <p>No bookmarks found.</p>
+      )} */}
     </div>
-  )
-}
+  );
+};
 
-export default Bookmarks
+export default Bookmarks;

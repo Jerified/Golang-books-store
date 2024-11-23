@@ -1,0 +1,24 @@
+
+.env
+node_modules
+
+*.o
+*.a
+*.so
+
+#log
+*.log
+
+# Folders
+_obj
+_test
+vendor/
+
+#compiled binary files
+*.exe
+*.out
+
+.DS_Store
+
+/bin/
+*.out

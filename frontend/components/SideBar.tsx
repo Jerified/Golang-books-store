@@ -11,7 +11,7 @@ import { RootState } from "@/lib/store";
 import Link from "next/link";
 import { BiLogOutCircle } from "react-icons/bi";
 
-const SideBar = () => {
+const SideBar = ({data}: any) => {
     const logout = async () => {
         await fetch("http://localhost:5000/api/logout", {
             method: 'POST',
@@ -19,17 +19,13 @@ const SideBar = () => {
             credentials: "include"
         })
     } 
-    const data = useSelector((state: RootState) => state.user.data)
+    // const data = useSelector((state: RootState) => state.user.data)
     console.log(data)
     const [selected, setSelected] = useState(0);
 
     return (
-        <div className='fixed '>
-            <div className="">
-                <UserBadge />
-            </div>
-
-            <nav className=" p-4 flex flex-col h-full justify-center w-fit gap-4 mt-8">
+        <div className=' h-full flex flex-col items-cente justify-center p-4 gap-4'>
+            <nav className=" w-fit mt-8">
                 <div className="flex items-center">
                     <NavItem selected={selected === 0} id={0} setSelected={setSelected}>
                             <IoBook />
@@ -40,7 +36,7 @@ const SideBar = () => {
                     <NavItem selected={selected === 1} id={1} setSelected={setSelected}>
                         <FaBookmark />
                     </NavItem>
-                    <p className="text-black text-xs font-semibold">Bookmark</p>
+                    <Link href={`user/${data?.id}/bookmarks`} className="text-black text-xs font-semibold">Bookmark</Link>
                 </div>
                 <div className="flex items-center">
                     <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
@@ -51,18 +47,17 @@ const SideBar = () => {
                 <div className="flex items-center">
                     {
                         data.message === "Unauthenticated" ?
-                         <>
-                            <NavItem selected={selected === 3} id={3} setSelected={setSelected}>
-                                <IoLogOut className="text-2xl" />
+                        <>
+                             <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
+                            <IoLogOut />
                             </NavItem>
-                            <Link href={"/login"} className="text-black text-xs font-semibold">Login</Link>
-                         </>
-                         :
-                         <>
-                            <NavItem selected={selected === 3} id={3} setSelected={setSelected}>
-                                <IoLogOut className="text-2xl" />
+                            <Link href={'/login'} className="text-black text-xs font-semibold">Login</Link>
+                        </> : 
+                        <>
+                             <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
+                                <CgProfile />
                             </NavItem>
-                            <p onClick={logout} className="text-black text-xs font-semibold cursor-pointer">Logout</p>
+                            <p className="text-black text-xs font-semibold">Logout</p>
                         </>
                     }
                 </div>

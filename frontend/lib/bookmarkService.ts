@@ -5,6 +5,7 @@ const baseUrl = 'http://localhost:5000';
 export const addBookToBookmark = async (userId: string, bookId: string) => {
   try {
     const response = await axios.get(`${baseUrl}/api/user/${userId}/bookmarks/${bookId}`);
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error('Error adding book to bookmark:', error);

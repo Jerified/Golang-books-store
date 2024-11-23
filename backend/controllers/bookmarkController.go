@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/Jerified/go-bookstore/database"
@@ -39,7 +38,7 @@ func AddBookToBookmark(c *fiber.Ctx) error {
 
 	// Initialize bookmark field if it is null
 	if user.Bookmark == nil {
-		update:= bson.M{"$set": bson.M{"bookmark": []primitive.ObjectID{}}}
+		update := bson.M{"$set": bson.M{"bookmark": []primitive.ObjectID{}}}
 		if _, err := bookmarkConnection.UpdateOne(ctx, filter, update); err != nil {
 			log.Printf("Failed to initialize bookmark field: %v", err)
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to initialize bookmark field"})
@@ -55,8 +54,7 @@ func AddBookToBookmark(c *fiber.Ctx) error {
 
 	// Update user's bookmark list
 	update := bson.M{"$push": bson.M{"bookmark": bookID}}
-	result, err := bookmarkConnection.UpdateOne(ctx, filter, update)
-	if err != nil {
+	if _,err := bookmarkConnection.UpdateOne(ctx, filter, update); err != nil {
 		log.Printf("Failed to add book to bookmark: %v", err)
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to add book to bookmark"})
 	}

@@ -7,6 +7,7 @@ import { FaRegBookmark } from "react-icons/fa"
 import { LuShare2 } from "react-icons/lu";
 import Share from '@/components/ShareBook';
 import Bookmark from '@/components/BookmarkButton';
+import { UserProvider } from '@/app/user-provider';
 // import * as locale from 'locale-codes';
 
 const poppins = Playfair_Display({ 
@@ -33,6 +34,7 @@ async function getBook(id: string): Promise<Book> {
     cache: 'no-store',
   });
 
+
   if (!res.ok) {
     throw new Error('Failed to fetch book');
   }
@@ -42,18 +44,20 @@ async function getBook(id: string): Promise<Book> {
 
 const BookDetail = async ({params}: IdProp) => {
     const book = await getBook(params.id);
+    // const user = await UserProvider()
+
     const buffer = await fetch(book.image.smallThumbnail).then(async (res) => {
         return Buffer.from(await res.arrayBuffer())
     })
     const { base64 } = await getPlaiceholder(buffer)
-    // console.log(book)
+    // console.log(user)
   return (
     <div className={`lg:flex gap-36 ${poppins.className}`}>
         {/* <p className="">{params.id}</p> */}
         <div className="w-[16rem] h-[20rem] flex mx-auto lg:mx-0">
             <Image src={book.image.thumbnail} alt={book.title} placeholder='blur' blurDataURL={base64} width={500} height={400} className='w-[30% h-[20rem bg-cover' quality={100}/>
         </div>
-    <div className="">
+    <div className="fle flex-col lg:flex-none items-center justify-center">
         <p className='pt-3 leading-[1] max-h-[4rem] font-semibold text-2xl lg:text-3xl'>{book.title}</p>
         <p className='py-4 font-bold'><span className="font-medium">by</span> {book.authors[0]}</p>
         <p className='pt-3 max-w-lg'>{book.description}</p>
