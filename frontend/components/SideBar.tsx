@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBookmark } from "react-icons/fa6";
 import { IoBook, IoLogOut } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
@@ -12,6 +12,9 @@ import Link from "next/link";
 import { BiLogOutCircle } from "react-icons/bi";
 
 const SideBar = ({data}: any) => {
+    // useEffect(() => {
+    //     const data = 
+    // }, [])
     const logout = async () => {
         await fetch("http://localhost:5000/api/logout", {
             method: 'POST',

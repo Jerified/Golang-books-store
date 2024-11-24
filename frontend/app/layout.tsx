@@ -27,8 +27,8 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     // const user = await fetchUser()
-    const user = await getUser()
-    console.log(user)
+    // const user = await getUser()
+    // console.log(user)
     return (
         <html lang="en" className={` `} 
         // style={{
@@ -39,11 +39,11 @@ export default async function RootLayout({
                 <body className={`bg-[#D7A449]/30 backdrop-blur-md lg:flex flex-row gap-6 px-4 lg:px-0 w-full ${poppins.className}`}>
                     <ReduxProvider>
                         <Toaster />
-                        <div className="grid grid-cols-12 ">
-                            <div className="hidden op-50% left-50  col-span-4">
+                        <div className="lg:grid grid-cols-12 ">
+                            {/* <div className="hidden lg:block op-50% left-50  col-span-4">
                                 {/* <UserBadge  /> */}
-                                <SideBar data={user} />
-                            </div>
+                                <SideBar />
+                            </div> */}
                             <div className="min-h-screen max-w-6xl mx-auto md:px-8 lg:col-span-8">
                                 <Navbar />
                                 {children}

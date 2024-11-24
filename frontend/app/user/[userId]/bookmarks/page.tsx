@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import BookCard from "@/components/BookCard";
 import { Book } from "@/types/Book";
 import { getUser } from "@/lib/getUser";
+import { getUserBookmarks } from "@/lib/bookmarkService";
 
 type UserIdProp = {
   params: {
@@ -49,14 +50,18 @@ const Bookmarks = async ({ params }: UserIdProp) => {
 //   if (!bookmarks) {
 //     return <div>Loading...</div>;
 //   }
-    const user = await getUser()
-    console.log(user)
-    // const bookmarks = await getUserBookmarks()
+        const user = await getUser()
+        const userId = user?.id;
+        console.log(user)
+        if (!userId || params.userId !== userId) {
+            notFound();
+        }
+        const bookmarks = await getUserBookmarks(userId)
 
   return (
     <div>
       <h1 className="text-2xl font-semibold pb-8">Bookmarks</h1>
-      {/* {bookmarks.length > 0 ? (
+      {bookmarks.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 ">
           {bookmarks.map((bookmark: Book) => (
             <React.Fragment key={bookmark.id}>
@@ -66,7 +71,7 @@ const Bookmarks = async ({ params }: UserIdProp) => {
         </div>
       ) : (
         <p>No bookmarks found.</p>
-      )} */}
+      )}
     </div>
   );
 };
